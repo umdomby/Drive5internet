@@ -9,28 +9,20 @@ export default function Set() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [ipAddress, setIpAddress] = useState('');
-    var interval;
+
 
     useEffect(async () => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             if (value !== null) {
                 setIpAddress(value)
-                interval = setInterval(() => socketTest(value), 5000)
-                return () => clearInterval(interval);
+                const timer =  setInterval(() => socketTest(value), 5000)
+                return () => clearTimeout(timer);
             }
         } catch (e) {
             // error reading value
         }
     },[])
-
-    if(store.webSocket.readyState !== 1 ) {
-        if( modalVisible === false) {
-            if(ipAddress.length > 10) {
-                Wsconnect(ipAddress)
-            }
-        }
-    }
 
     const socketTest = (value) => {
         if (store.webSocket.readyState === store.webSocket.CLOSED || store.webSocket.readyState === store.webSocket.CLOSING) {
@@ -50,19 +42,19 @@ export default function Set() {
         }
         store.setModalVisible(false)
         setModalVisible(false)
-        if(store.webSocket.readyState === 1 ) {
+        if(store.webSocket.readyState === store.webSocket.OPEN ) {
             store.webSocket.close()
         }
         Wsconnect(ipAddress)
     }
 
     const setButton = () => {
-        clearInterval(interval)
+        //clearInterval(interval)
         setModalVisible(true)
         store.setModalVisible(true)
-        if(store.webSocket.readyState === 1 ) {
-            store.webSocket.close()
-        }
+        // if(store.webSocket.readyState === 1 ) {
+        //     store.webSocket.close()
+        // }
     }
 
     return (
