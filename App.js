@@ -12,7 +12,6 @@ export default function App() {
       <View style={styles.container}>
           <Axis/>
           <Set/>
-          <WebSocketOcean/>
       </View>
   );
 }

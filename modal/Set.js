@@ -9,14 +9,18 @@ export default function Set() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [ipAddress, setIpAddress] = useState('');
+    const [idKey, setIpKey] = useState('');
 
 
     useEffect(async () => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
+            const value2 = await AsyncStorage.getItem('@storage_Key2')
             if (value !== null) {
                 setIpAddress(value)
-                const timer =  setInterval(() => socketTest(value), 5000)
+                setIpKey(value2)
+                Wsconnect(value)
+                const timer = setInterval(() => socketTest(value), 5000)
                 return () => clearTimeout(timer);
             }
         } catch (e) {
