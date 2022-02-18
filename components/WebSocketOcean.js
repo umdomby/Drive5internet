@@ -1,13 +1,12 @@
 import store from "../store";
 
-
-const WebSocketOcean = () => {
+const WebSocketOcean = (idKey) => {
 
     try {
         store.setWebSocketOcean(new WebSocket('wss://umdom.by:4433'))
         store.webSocketOcean.onopen = () => {
             store.webSocketOcean.send(JSON.stringify({
-                id: 4,
+                id: Number(idKey),
                 username: 'userOcean',
                 method: "connection"
             }))
@@ -26,16 +25,13 @@ const WebSocketOcean = () => {
             if (store.webSocketOcean.readyState === store.webSocketOcean.OPEN) {
                 switch (msg.method) {
                     case "connection":
-                        console.log(`пользователь ${msg.username} присоединился`)
-                        //setVariable(msg.method)
+                        console.log(`пользователь OCEAN ${msg.username} присоединился`)
                         break
                     case "messages":
                         console.log(msg.message + '  ' + msg.message2)
                         if (store.webSocket.readyState === store.webSocket.OPEN) {
                             store.webSocket.send(JSON.stringify({
                                 method: 'messages',
-                                id: 5,
-                                date: Date.now(),
                                 username: 'user',
                                 message: msg.message,
                                 message2: msg.message2,
@@ -49,27 +45,6 @@ const WebSocketOcean = () => {
     }catch (e) {
         console.log(e)
     }
-
-
-
-    // const socketTest = () => {
-    //     if (store.webSocketOcean.readyState === store.webSocketOcean.CLOSED || store.webSocketOcean.readyState === store.webSocketOcean.CLOSING) {
-    //         wsConnect()
-    //         console.log('WebSocket reconnected ' + 'user')
-    //     }
-    // }
-
-    // const sendMessage = () => {
-    //     if(store.webSocketOcean.readyState === store.webSocketOcean.OPEN) {
-    //         store.webSocketOcean.send(JSON.stringify({
-    //             id: 4,
-    //             method: 'messages',
-    //             message: 0.5,
-    //             message2: 0.5,
-    //             stop: 0
-    //         }))
-    //     }
-    // }
 
     return([])
 

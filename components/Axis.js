@@ -13,8 +13,6 @@ const Axis = () => {
         if(store.webSocket.readyState === 1 ) {
             store.webSocket.send(JSON.stringify({
                 method: 'messages',
-                id: '1',
-                date: Date.now(),
                 username: 'user',
                 message: x,
                 message2: y,

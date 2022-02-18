@@ -4,58 +4,77 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Wsconnect from "../components/Wsconnect";
 import store from "../store"
+import WebSocketOcean from "../components/WebSocketOcean";
 
 export default function Set() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [ipAddress, setIpAddress] = useState('');
-    const [idKey, setIpKey] = useState('');
+    const [idKey, setIdKey] = useState('');
 
 
     useEffect(async () => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
             const value2 = await AsyncStorage.getItem('@storage_Key2')
-            if (value !== null) {
+            if (value !== null && value2 !== null) {
                 setIpAddress(value)
-                setIpKey(value2)
+                setIdKey(value2)
                 Wsconnect(value)
-                const timer = setInterval(() => socketTest(value), 5000)
+                WebSocketOcean(value2)
+                const timer = setInterval(() => socketTest(value, value2), 5000)
                 return () => clearTimeout(timer);
             }
+
         } catch (e) {
             // error reading value
         }
     },[])
 
-    const socketTest = (value) => {
+    const socketTest = (value, value2) => {
         if (store.webSocket.readyState === store.webSocket.CLOSED || store.webSocket.readyState === store.webSocket.CLOSING) {
             Wsconnect(value)
             console.log('socketTest store.webSocket arduino')
+        }
+        if (store.webSocketOcean.readyState === store.webSocketOcean.CLOSED || store.webSocketOcean.readyState === store.webSocketOcean.CLOSING) {
+            WebSocketOcean(value2)
+            console.log('socketTest store.webSocketOcean ocean')
         }
     }
 
     const hideModal = async () => {
         try {
             if(ipAddress.length > 10) {
+                console.log('WS CLOSE 0')
                 await AsyncStorage.setItem('@storage_Key', ipAddress)
+                if(store.webSocket.readyState === store.webSocket.OPEN ) {
+                    console.log('WS CLOSE 1')
+                    store.webSocket.close()
+                    Wsconnect(ipAddress)
+                }
+            }
+            if(idKey.length > 0) {
+                await AsyncStorage.setItem('@storage_Key2', idKey)
+                console.log('WS CLOSE 00')
+                if(store.webSocketOcean.readyState === store.webSocketOcean.OPEN) {
+                    console.log('WS CLOSE 2')
+                    store.webSocketOcean.close()
+                    WebSocketOcean(idKey)
+                }
+
             }
         } catch (e) {
             console.log('eeeee ' + e)
             // saving error
         }
-        store.setModalVisible(false)
+        //store.setModalVisible(false)
         setModalVisible(false)
-        if(store.webSocket.readyState === store.webSocket.OPEN ) {
-            store.webSocket.close()
-        }
-        Wsconnect(ipAddress)
     }
 
     const setButton = () => {
         //clearInterval(interval)
         setModalVisible(true)
-        store.setModalVisible(true)
+        //store.setModalVisible(true)
         // if(store.webSocket.readyState === 1 ) {
         //     store.webSocket.close()
         // }
@@ -80,6 +99,12 @@ export default function Set() {
                             onChangeText={setIpAddress}
                             value={ipAddress}
                             placeholder="input ip address"
+                        />
+                        <TextInput
+                            style={styles.modalText}
+                            onChangeText={setIdKey}
+                            value={idKey}
+                            placeholder="input id key"
                         />
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
