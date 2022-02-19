@@ -17,6 +17,11 @@ export default function Wsconnect(ipaddress){
                 switch (msg.method) {
                     case "connection":
                         console.log(`пользователь ARDUINO ${msg.username} присоединился`)
+                        // console.log(msg.txt)
+                        // console.log("store.degreegoback: " + msg.degreegoback)
+                        // console.log("store.degreeleftright: " + msg.degreeleftright)
+                        // console.log("store.delaycommand: " + msg.delaycommand)
+                        // console.log("store.accel: " + msg.accel)
                         break
                     case "messages":
                         console.log(msg.message + '  ' + msg.message2)

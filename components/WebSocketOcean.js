@@ -28,13 +28,15 @@ const WebSocketOcean = (idKey) => {
                         console.log(`пользователь OCEAN ${msg.username} присоединился`)
                         break
                     case "messages":
-                        console.log(msg.message + '  ' + msg.message2)
+                        console.log(msg.message + '|' + msg.message2 + '|' + msg.accel)
                         if (store.webSocket.readyState === store.webSocket.OPEN) {
                             store.webSocket.send(JSON.stringify({
                                 method: 'messages',
                                 username: 'user',
                                 message: msg.message,
                                 message2: msg.message2,
+                                accel: msg.accel,
+                                stop: msg.stop
                             }))
                         }
                         break
