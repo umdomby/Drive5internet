@@ -6,7 +6,7 @@ const WebSocketOcean = (idKey) => {
         store.setWebSocketOcean(new WebSocket('wss://umdom.by:4433'))
         store.webSocketOcean.onopen = () => {
             store.webSocketOcean.send(JSON.stringify({
-                id: Number(idKey),
+                id: idKey,
                 username: 'userOcean',
                 method: "connection"
             }))
