@@ -3,7 +3,8 @@ import store from "../store";
 const WebSocketOcean = (idKey) => {
 
     try {
-        store.setWebSocketOcean(new WebSocket('wss://umdom.by:4433'))
+        //store.setWebSocketOcean(new WebSocket('wss://umdom.by:4433'))
+        store.setWebSocketOcean(new WebSocket('wss://servicerobot.pro:4433'))
         store.webSocketOcean.onopen = () => {
             store.webSocketOcean.send(JSON.stringify({
                 id: idKey,
